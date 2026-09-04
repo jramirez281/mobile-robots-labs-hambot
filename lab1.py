@@ -4,7 +4,7 @@ import math
 
 bot = HamBot(lidar_enabled=False, camera_enabled=False)
 #helper function to translate linear distance to revolutions, given radius and linear distance in meters
-def linear_to_rev(self, radius, distance):
+def linear_to_rev(radius, distance):
     return distance/((2*math.pi)*radius)
 
 ## Move forward for 2 seconds
