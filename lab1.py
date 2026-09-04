@@ -35,7 +35,7 @@ def move_forward(distance, speed=default_speed):
 def turn_in_place(angle, speed=default_speed):
     turn_distance = (((2*math.pi) * axel_radius)/360) * angle
     turn_distance_rev = linear_to_rev(wheel_radius, turn_distance)
-    turn_mins = turn_distance_rev/default_speed
+    turn_mins = turn_distance_rev/speed
     turn_secs = turn_mins * 60
 
     bot.set_left_motor_speed(speed * -1)
@@ -44,4 +44,20 @@ def turn_in_place(angle, speed=default_speed):
 
     bot.stop_motors()
 
+#move in counter-clockwise curved arc given arc radius (meters) and optional speed
+def travel_arc_ccw(radius, speed=default_speed):
+    #distance and time right wheel travels at default speed
+    rw_travel_distance = (2*math.pi)*(radius+axel_radius)
+    rw_revs = linear_to_rev(wheel_radius, rw_travel_distance)
+    travel_mins = rw_revs/speed
+    travel_secs = rw_travel_mins * 60
 
+    #computing speed at which left wheel travels
+    lw_travel_distance = (2*math.pi)*(radius-axel_radius)
+    lw_speed = lw_travel_distance/travel_mins
+
+    bot.set_left_motor_speed(lw_speed)
+    bot.set_left_motor_speed(speed)
+    time.sleep(travel_secs)
+
+    bot.stop_motors()
