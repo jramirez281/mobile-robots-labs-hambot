@@ -58,7 +58,8 @@ def travel_arc_ccw(radius, speed=default_speed):
 
     #computing speed at which left wheel travels
     lw_travel_distance = (2*math.pi)*(radius-axel_radius)
-    lw_speed = lw_travel_distance/travel_mins
+    lw_revs = linear_to_rev(wheel_radius, lw_travel_distance)
+    lw_speed = lw_revs/travel_mins
 
     bot.set_left_motor_speed(lw_speed)
     bot.set_right_motor_speed(speed)
