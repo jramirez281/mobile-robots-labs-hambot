@@ -50,7 +50,7 @@ def travel_arc_ccw(radius, speed=default_speed):
     rw_travel_distance = (2*math.pi)*(radius+axel_radius)
     rw_revs = linear_to_rev(wheel_radius, rw_travel_distance)
     travel_mins = rw_revs/speed
-    travel_secs = rw_travel_mins * 60
+    travel_secs = travel_mins * 60
 
     #computing speed at which left wheel travels
     lw_travel_distance = (2*math.pi)*(radius-axel_radius)
