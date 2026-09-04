@@ -124,3 +124,25 @@ def demo_path(L, W, R1, R2, S, speed=default_linear_speed):
 
     #step 4 - Equilateral Triangle
     drive_triangle(S, speed=speed)
+
+def interactive_demo():
+    print("Welcome to the Lab 1 demo!")
+    print("Enter Rectangle length (in meters): ")
+    L = float(input())
+    print("Enter Rectangle width (in meters): ")
+    W = float(input())
+    print("Enter Counterclockwise Circle Radius (in meters): ")
+    R1 = float(input())
+    print("Enter Clockwise Circle Radius (in meters): ")
+    R2 = float(input())
+    print("Enter Equilateral Triangle Side Length (in meters): ")
+    S = float(input())
+    print("Enter speed (in m/s), leave blank to use default speed: ")
+    if speed == "":
+        speed = default_linear_speed
+    speed = float(input())
+    print("Your chosen values:\nL = {L}\tW = {W}\nR1 = {R1}\tR2 = {R2}\nS = {S}\tSpeed = {speed}")
+    print("Press Enter to continue.")
+    input()
+
+    demo_path(L, W, R1, R2, S, speed=speed)
