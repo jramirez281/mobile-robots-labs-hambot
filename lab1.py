@@ -87,3 +87,29 @@ def travel_arc_cw(radius, speed=default_linear_speed):
     time.sleep(travel_secs)
 
     bot.stop_motors()
+
+def demo_path(L, W, R1, R2, S, speed=default_linear_speed):
+    #step 1 - Rectangle
+    move_forward()
+    turn_in_place()
+    move_forward()
+    turn_in_place()
+    move_forward()
+    turn_in_place()
+    move_forward()
+    turn_in_place()
+    move_forward()
+
+    #step 2 - Counterclockwise Circle
+    travel_arc_ccw()
+
+    #step 3 - Clockwise Circle
+    travel_arc_cw()
+
+    #step 4 - Equilateral Triangle
+    move_forward()
+    turn_in_place()
+    move_forward()
+    turn_in_place()
+    move_forward()
+    turn_in_place()
