@@ -103,20 +103,23 @@ def drive_rectangle(L, W, speed=default_linear_speed):
     turn_in_place(-90, speed=speed)
     move_forward(W/2, speed=speed)
 
+def drive_triangle(S, speed=default_linear_speed):
+    move_forward(S, speed=speed)
+    turn_in_place(120, speed=speed)
+    move_forward(S, speed=speed)
+    turn_in_place(120, speed=speed)
+    move_forward(S, speed=speed)
+    turn_in_place(120, speed=speed)
+
 def demo_path(L, W, R1, R2, S, speed=default_linear_speed):
     #step 1 - Rectangle
     drive_rectangle(L, W, speed=speed)
 
     #step 2 - Counterclockwise Circle
-    travel_arc_ccw()
+    travel_arc_ccw(R1, speed=speed)
 
     #step 3 - Clockwise Circle
-    travel_arc_cw()
+    travel_arc_cw(R2, speed=speed)
 
     #step 4 - Equilateral Triangle
-    move_forward()
-    turn_in_place()
-    move_forward()
-    turn_in_place()
-    move_forward()
-    turn_in_place()
+    drive_triangle(S, speed=speed)
