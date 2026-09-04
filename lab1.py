@@ -14,6 +14,7 @@ def linear_to_rev(radius, distance):
 #bot.stop_motors()
 
 wheel_radius = 0.045
+axel_radius = 0.205/2
 #function to move robot forward x meters
 #default speed is .1 m/s
 #converting .1 m/s to equivalent value in rpm
@@ -29,4 +30,14 @@ def move_forward(distance, speed=default_speed):
 
     bot.stop_motors()
        
-def turn_in_place
+def turn_in_place():
+    turn_distance = (2 * math.pi) * axel_radius
+    turn_distance_rev = linear_to_rev(wheel_radius, turn_distance)
+    turn_mins = turn_distance_rev/default_speed
+    turn_secs = turn_mins * 60
+
+    bot.set_left_motor_speed(default_speed * -1)
+    bot.set_right_motor_speed(default_speed)
+
+    time.sleep(turn_secs)
+
