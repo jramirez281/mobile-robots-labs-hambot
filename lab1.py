@@ -37,13 +37,17 @@ def move_forward(distance, speed=default_linear_speed):
 #turn in place given angle (in degrees), speed can be optionally set as well
 def turn_in_place(angle, speed=default_linear_speed):
     speed_rpm = m_s_to_rpm(speed)
-    turn_distance = (((2*math.pi) * axel_radius)/360) * angle
+    turn_distance = (((2*math.pi) * axel_radius)/360) * abs(angle)
     turn_distance_rev = linear_to_rev(wheel_radius, turn_distance)
     turn_mins = turn_distance_rev/speed_rpm
     turn_secs = turn_mins * 60
 
-    bot.set_left_motor_speed(speed_rpm * -1)
-    bot.set_right_motor_speed(speed_rpm)
+    if angle < 0:
+        bot.set_left_motor_speed(speed_rpm)
+        bot.set_right_motor_speed(speed_rpm * -1)
+    else:
+        bot.set_left_motor_speed(speed_rpm * -1)
+        bot.set_right_motor_speed(speed_rpm)
     time.sleep(turn_secs)
 
     bot.stop_motors()
