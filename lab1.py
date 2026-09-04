@@ -92,17 +92,20 @@ def travel_arc_cw(radius, speed=default_linear_speed):
 
     bot.stop_motors()
 
+def drive_rectangle(L, W, speed=default_linear_speed):
+    move_forward(W/2, speed=speed)
+    turn_in_place(-90, speed=speed)
+    move_forward(L, speed=speed)
+    turn_in_place(-90, speed=speed)
+    move_forward(W, speed=speed)
+    turn_in_place(-90, speed=speed)
+    move_forward(L, speed=speed)
+    turn_in_place(-90, speed=speed)
+    move_forward(W/2, speed=speed)
+
 def demo_path(L, W, R1, R2, S, speed=default_linear_speed):
     #step 1 - Rectangle
-    move_forward()
-    turn_in_place()
-    move_forward()
-    turn_in_place()
-    move_forward()
-    turn_in_place()
-    move_forward()
-    turn_in_place()
-    move_forward()
+    drive_rectangle(L, W, speed=speed)
 
     #step 2 - Counterclockwise Circle
     travel_arc_ccw()
