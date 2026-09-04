@@ -57,7 +57,7 @@ def travel_arc_ccw(radius, speed=default_speed):
     lw_speed = lw_travel_distance/travel_mins
 
     bot.set_left_motor_speed(lw_speed)
-    bot.set_left_motor_speed(speed)
+    bot.set_right_motor_speed(speed)
     time.sleep(travel_secs)
 
     bot.stop_motors()
