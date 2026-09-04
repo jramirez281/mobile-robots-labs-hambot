@@ -6,6 +6,8 @@ bot = HamBot(lidar_enabled=False, camera_enabled=False)
 #helper function to translate linear distance to revolutions, given radius and linear distance in meters
 def linear_to_rev(radius, distance):
     return distance/((2*math.pi)*radius)
+def m_s_to_rpm(speed):
+    return ((speed/0.045)*(60/(2*math.pi)))
 
 ## Move forward for 2 seconds
 #bot.set_left_motor_speed(-50)   # left motor reversed
@@ -19,41 +21,40 @@ axel_radius = 0.205/2
 #default speed is .1 m/s
 #converting .1 m/s to equivalent value in rpm
 default_linear_speed = 0.1
-default_speed = ((default_linear_speed/.045)*(60/(2*math.pi)))
-def set_default_linear_speed(speed):
-    default_linear_speed = speed
-    default_speed = ((default_linear_speed/.045)*(60/(2*math.pi)))
 
-def move_forward(distance, speed=default_speed):
+def move_forward(distance, speed=default_linear_speed):
+    speed_rpm = m_s_to_rpm(speed)
     #find the equivalent revolutions first
     revolutions = linear_to_rev(wheel_radius, distance)
-    minutes = revolutions/speed
+    minutes = revolutions/speed_rpm
     seconds = minutes*60
-    bot.set_left_motor_speed(speed)
-    bot.set_right_motor_speed(speed)
+    bot.set_left_motor_speed(speed_rpm)
+    bot.set_right_motor_speed(speed_rpm)
     time.sleep(seconds)
 
     bot.stop_motors()
        
 #turn in place given angle (in degrees), speed can be optionally set as well
-def turn_in_place(angle, speed=default_speed):
+def turn_in_place(angle, speed=default_linear_speed):
+    speed_rpm = m_s_to_rpm(speed)
     turn_distance = (((2*math.pi) * axel_radius)/360) * angle
     turn_distance_rev = linear_to_rev(wheel_radius, turn_distance)
-    turn_mins = turn_distance_rev/speed
+    turn_mins = turn_distance_rev/speed_rpm
     turn_secs = turn_mins * 60
 
-    bot.set_left_motor_speed(speed * -1)
-    bot.set_right_motor_speed(speed)
+    bot.set_left_motor_speed(speed_rpm * -1)
+    bot.set_right_motor_speed(speed_rpm)
     time.sleep(turn_secs)
 
     bot.stop_motors()
 
 #move in counter-clockwise curved arc given arc radius (meters) and optional speed
-def travel_arc_ccw(radius, speed=default_speed):
+def travel_arc_ccw(radius, speed=default_linear_speed):
+    speed_rpm = m_s_to_rpm(speed)
     #distance and time right wheel travels at default speed
     rw_travel_distance = (2*math.pi)*(radius+axel_radius)
     rw_revs = linear_to_rev(wheel_radius, rw_travel_distance)
-    travel_mins = rw_revs/speed
+    travel_mins = rw_revs/speed_rpm
     travel_secs = travel_mins * 60
 
     #computing speed at which left wheel travels
@@ -62,17 +63,18 @@ def travel_arc_ccw(radius, speed=default_speed):
     lw_speed = lw_revs/travel_mins
 
     bot.set_left_motor_speed(lw_speed)
-    bot.set_right_motor_speed(speed)
+    bot.set_right_motor_speed(speed_rpm)
     time.sleep(travel_secs)
 
     bot.stop_motors()
     
 #move in clockwise curved arc given arc radius (meters) and optional speed
-def travel_arc_cw(radius, speed=default_speed):
+def travel_arc_cw(radius, speed=default_linear_speed):
+    speed_rpm = m_s_to_rpm(speed)
     #distance and time left wheel travels at default speed
     lw_travel_distance = (2*math.pi)*(radius+axel_radius)
     lw_revs = linear_to_rev(wheel_radius, lw_travel_distance)
-    travel_mins = lw_revs/speed
+    travel_mins = lw_revs/speed_rpm
     travel_secs = travel_mins * 60
 
     #computing speed at which right wheel travels
@@ -81,7 +83,7 @@ def travel_arc_cw(radius, speed=default_speed):
     rw_speed = rw_revs/travel_mins
 
     bot.set_right_motor_speed(rw_speed)
-    bot.set_left_motor_speed(speed)
+    bot.set_left_motor_speed(speed_rpm)
     time.sleep(travel_secs)
 
     bot.stop_motors()
