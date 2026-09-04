@@ -38,6 +38,8 @@ def turn_in_place():
 
     bot.set_left_motor_speed(default_speed * -1)
     bot.set_right_motor_speed(default_speed)
-
     time.sleep(turn_secs)
+
+    bot.stop_motors()
+
 
