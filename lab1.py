@@ -1,0 +1,31 @@
+from robot_systems.robot import HamBot
+import time
+import math
+
+bot = HamBot(lidar_enabled=False, camera_enabled=False)
+#helper function to translate linear distance to revolutions, given radius and linear distance in meters
+def linear_to_rev(self, radius, distance):
+    return distance/((2*math.pi)*radius)
+
+## Move forward for 2 seconds
+#bot.set_left_motor_speed(-50)   # left motor reversed
+#bot.set_right_motor_speed(50)   # right motor forward
+#time.sleep(2)
+#bot.stop_motors()
+
+wheel_radius = 0.045
+#function to move robot forward x meters
+#default speed is .1 m/s
+#converting .1 m/s to equivalent value in rpm
+default_speed = ((.1/.045)*(60/(2*math.pi)))
+def move_forward(self, distance, speed=default_speed):
+    #find the equivalent revolutions first
+    revolutions = linear_to_rev(wheel_radius, distance)
+    minutes = revolutions/speed
+    seconds = minutes*60
+    bot.set_left_motor_speed(default_speed)
+    bot.set_right_motor_speed(default_speed)
+    time.sleep(seconds)
+
+    bot.stop_motors()
+       
