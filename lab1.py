@@ -66,3 +66,22 @@ def travel_arc_ccw(radius, speed=default_speed):
     time.sleep(travel_secs)
 
     bot.stop_motors()
+    
+#move in clockwise curved arc given arc radius (meters) and optional speed
+def travel_arc_cw(radius, speed=default_speed):
+    #distance and time left wheel travels at default speed
+    lw_travel_distance = (2*math.pi)*(radius+axel_radius)
+    lw_revs = linear_to_rev(wheel_radius, lw_travel_distance)
+    travel_mins = lw_revs/speed
+    travel_secs = travel_mins * 60
+
+    #computing speed at which right wheel travels
+    rw_travel_distance = (2*math.pi)*(radius-axel_radius)
+    rw_revs = linear_to_rev(wheel_radius, rw_travel_distance)
+    rw_speed = rw_revs/travel_mins
+
+    bot.set_right_motor_speed(rw_speed)
+    bot.set_left_motor_speed(speed)
+    time.sleep(travel_secs)
+
+    bot.stop_motors()
