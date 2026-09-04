@@ -9,19 +9,13 @@ def linear_to_rev(radius, distance):
 def m_s_to_rpm(speed):
     return ((speed/0.045)*(60/(2*math.pi)))
 
-## Move forward for 2 seconds
-#bot.set_left_motor_speed(-50)   # left motor reversed
-#bot.set_right_motor_speed(50)   # right motor forward
-#time.sleep(2)
-#bot.stop_motors()
-
 wheel_radius = 0.045
 axel_radius = 0.205/2
 #function to move robot forward x meters
 #default speed is .1 m/s
 #converting .1 m/s to equivalent value in rpm
 default_linear_speed = 0.1
-
+    
 def move_forward(distance, speed=default_linear_speed):
     speed_rpm = m_s_to_rpm(speed)
     #find the equivalent revolutions first
@@ -51,6 +45,13 @@ def turn_in_place(angle, speed=default_linear_speed):
     time.sleep(turn_secs)
 
     bot.stop_motors()
+
+#helper function to make robot face north
+def face_north(speed=default_linear_speed):
+    current_heading = bot.get_heading()
+    target_heading = 90
+    turn_angle = (target_heading-current_heading + 180) % 360 - 180
+    turn_in_place(turn_angle, speed=speed)
 
 #move in counter-clockwise curved arc given arc radius (meters) and optional speed
 def travel_arc_ccw(radius, speed=default_linear_speed):
