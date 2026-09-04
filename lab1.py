@@ -18,7 +18,7 @@ wheel_radius = 0.045
 #default speed is .1 m/s
 #converting .1 m/s to equivalent value in rpm
 default_speed = ((.1/.045)*(60/(2*math.pi)))
-def move_forward(self, distance, speed=default_speed):
+def move_forward(distance, speed=default_speed):
     #find the equivalent revolutions first
     revolutions = linear_to_rev(wheel_radius, distance)
     minutes = revolutions/speed
