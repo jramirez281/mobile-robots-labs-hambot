@@ -23,9 +23,10 @@ def move_forward(distance, speed=default_speed):
     revolutions = linear_to_rev(wheel_radius, distance)
     minutes = revolutions/speed
     seconds = minutes*60
-    bot.set_left_motor_speed(default_speed)
-    bot.set_right_motor_speed(default_speed)
+    bot.set_left_motor_speed(speed)
+    bot.set_right_motor_speed(speed)
     time.sleep(seconds)
 
     bot.stop_motors()
        
+def turn_in_place
