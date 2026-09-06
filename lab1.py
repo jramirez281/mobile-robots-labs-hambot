@@ -141,7 +141,6 @@ def interactive_demo():
     if speed == "":
         speed = default_linear_speed
     speed = float(input())
-    print("Your chosen values:\nL = {L}\tW = {W}\nR1 = {R1}\tR2 = {R2}\nS = {S}\tSpeed = {speed}")
     print("Press Enter to continue.")
     input()
 
