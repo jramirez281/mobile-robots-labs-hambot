@@ -138,9 +138,10 @@ def interactive_demo():
     print("Enter Equilateral Triangle Side Length (in meters): ")
     S = float(input())
     print("Enter speed (in m/s), leave blank to use default speed: ")
+    speed = input()
     if speed == "":
         speed = default_linear_speed
-    speed = float(input())
+    speed = float(speed)
     print("Press Enter to continue.")
     input()
 
