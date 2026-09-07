@@ -85,7 +85,7 @@ class MyRobot(HamBot):
         self.set_right_motor_speed(speed_rpm)
         time.sleep(travel_secs)
 
-        self.bot.stop_motors()
+        self.stop_motors()
 
     #move in clockwise curved arc given arc radius (meters) and optional speed
     def travel_arc_cw(self, radius, speed=None):
