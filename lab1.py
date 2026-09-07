@@ -13,7 +13,7 @@ wheel_radius = 0.045
 axel_radius = 0.205/2
 #function to move robot forward x meters
 #default speed is .1 m/s
-#converting .1 m/s to equivalent value in rpm
+#helper functions convert speed in m/s to equivalent value in rpm
 default_linear_speed = 0.1
     
 def move_forward(distance, speed=default_linear_speed):
