@@ -18,7 +18,10 @@ class MyRobot(HamBot):
     #default speed is .2 m/s
 
     #function to move robot forward x meters
-    def move_forward(self, distance, speed=self.default_linear_speed):
+    def move_forward(self, distance, speed=None):
+        if speed is None:
+            speed = self.default_linear_speed
+
         speed_rpm = self.m_s_to_rpm(speed)
         #find the equivalent revolutions first
         revolutions = self.linear_to_rev(self.wheel_radius, distance)
@@ -31,7 +34,10 @@ class MyRobot(HamBot):
         self.stop_motors()
 
     #turn in place given angle (in degrees), speed can be optionally set as well
-    def turn_in_place(self, angle, speed=self.default_linear_speed):
+    def turn_in_place(self, angle, speed=None):
+        if speed is None:
+            speed = self.default_linear_speed
+
         speed_rpm = self.m_s_to_rpm(speed)
         turn_distance = (((2*math.pi) * self.axel_radius)/360) * abs(angle)
         turn_distance_rev = self.linear_to_rev(self.wheel_radius, turn_distance)
@@ -49,14 +55,20 @@ class MyRobot(HamBot):
         self.stop_motors()
 
     #helper function to make robot face north
-    def face_north(self, speed=self.default_linear_speed):
+    def face_north(self, speed=None):
+        if speed is None:
+            speed = self.default_linear_speed
+
         current_heading = self.get_heading()
         target_heading = 90
         turn_angle = (target_heading-current_heading + 180) % 360 - 180
         self.turn_in_place(turn_angle, speed=speed)
 
     #move in counter-clockwise curved arc given arc radius (meters) and optional speed
-    def travel_arc_ccw(self, radius, speed=self.default_linear_speed):
+    def travel_arc_ccw(self, radius, speed=None):
+        if speed is None:
+            speed = self.default_linear_speed
+
         speed_rpm = self.m_s_to_rpm(speed)
         #distance and time right wheel travels at default speed
         rw_travel_distance = (2*math.pi)*(radius+self.axel_radius)
@@ -76,7 +88,10 @@ class MyRobot(HamBot):
         self.bot.stop_motors()
 
     #move in clockwise curved arc given arc radius (meters) and optional speed
-    def travel_arc_cw(self, radius, speed=self.default_linear_speed):
+    def travel_arc_cw(self, radius, speed=None):
+        if speed is None:
+            speed = self.default_linear_speed
+
         speed_rpm = self.m_s_to_rpm(speed)
         #distance and time left wheel travels at default speed
         lw_travel_distance = (2*math.pi)*(radius+self.axel_radius)
@@ -95,7 +110,10 @@ class MyRobot(HamBot):
 
         self.stop_motors()
 
-    def drive_rectangle(self, L, W, speed=self.default_linear_speed):
+    def drive_rectangle(self, L, W, speed=None):
+        if speed is None:
+            speed = self.default_linear_speed
+
         self.move_forward(W/2, speed=speed)
         self.turn_in_place(-90, speed=speed)
         self.move_forward(L, speed=speed)
@@ -106,7 +124,10 @@ class MyRobot(HamBot):
         self.turn_in_place(-90, speed=speed)
         self.move_forward(W/2, speed=speed)
 
-    def drive_triangle(self, S, speed=self.default_linear_speed):
+    def drive_triangle(self, S, speed=None):
+        if speed is None:
+            speed = self.default_linear_speed
+
         self.move_forward(S, speed=speed)
         self.turn_in_place(120, speed=speed)
         self.move_forward(S, speed=speed)
@@ -114,7 +135,10 @@ class MyRobot(HamBot):
         self.move_forward(S, speed=speed)
         self.turn_in_place(120, speed=speed)
 
-    def lab1_path(self, L, W, R1, R2, S, speed=self.default_linear_speed):
+    def lab1_path(self, L, W, R1, R2, S, speed=None):
+        if speed is None:
+            speed = self.default_linear_speed
+
         #step 1 - Rectangle
         self.drive_rectangle(L, W, speed=speed)
 
