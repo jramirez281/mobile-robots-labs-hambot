@@ -2,7 +2,7 @@ from robot_systems.robot import HamBot
 import time
 import math
 
-class MyRobot(Hambot):
+class MyRobot(HamBot):
     def __init__(self):
         super().__init__()
     #helper function to translate linear distance to revolutions, given radius and linear distance in meters
