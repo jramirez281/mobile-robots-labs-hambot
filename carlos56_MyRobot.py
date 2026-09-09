@@ -14,6 +14,9 @@ class MyRobot(HamBot):
     #helper functions convert speed in m/s to equivalent value in rpm
     def m_s_to_rpm(self, speed):
         return ((speed/0.045)*(60/(2*math.pi)))
+    #helper function to return calibration status
+    def get_calibration_status(self):
+        return self.imu.sensor.calibration_status
 
     #default speed is .2 m/s
 
