@@ -1,7 +1,6 @@
-#mobile-robots-labs-hambot
-Repo for code we will use for the hambot
+# mobile-robots-labs-hambot  Repo for code we will use for the hambot
 
-##To-Do  
+## To-Do  
 - Ramp-Up Function
 - (To figure out first) Use IMU and encoder feedback to keep track of
   accumulated error
