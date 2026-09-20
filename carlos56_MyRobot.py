@@ -106,6 +106,8 @@ class MyRobot(HamBot):
 
         self.stop_motors()
 
+    #drive the robot around a rectangle of length L and width W, starting from
+    #the midpoint of one side, turning -90 degrees (clockwise) at each corner
     def drive_rectangle(self, L, W, speed=None):
         if speed is None:
             speed = self.default_linear_speed
@@ -120,6 +122,8 @@ class MyRobot(HamBot):
         self.turn_in_place(-90, speed=speed)
         self.move_forward(W/2, speed=speed)
 
+    #drive the robot around an equilateral triangle of side length S, turning
+    #120 degrees (the exterior angle) at each vertex
     def drive_triangle(self, S, speed=None):
         if speed is None:
             speed = self.default_linear_speed
@@ -131,6 +135,8 @@ class MyRobot(HamBot):
         self.move_forward(S, speed=speed)
         self.turn_in_place(120, speed=speed)
 
+    #run the full lab 1 sequence: rectangle, counterclockwise circle,
+    #clockwise circle, then equilateral triangle
     def lab1_path(self, L, W, R1, R2, S, speed=None):
         if speed is None:
             speed = self.default_linear_speed
@@ -147,6 +153,8 @@ class MyRobot(HamBot):
         #step 4 - Equilateral Triangle
         self.drive_triangle(S, speed=speed)
 
+    #interactive demo: prompts the user for the rectangle, circle, and triangle
+    #dimensions (plus optional speed), then runs the full lab 1 path
     def lab1_demo(self):
         print("Welcome to the Lab 1 demo!")
         print("Enter Rectangle length (in meters): ")
