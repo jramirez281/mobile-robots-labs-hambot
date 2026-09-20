@@ -56,22 +56,9 @@ class MyRobot(HamBot):
         else:
             self.set_left_motor_speed(speed_rpm * -1)
             self.set_right_motor_speed(speed_rpm)
-        print("speed_rpm:",speed_rpm)
-        print("turn_secs:",turn_secs)
         time.sleep(turn_secs)
 
         self.stop_motors()
-
-    #helper function to make robot face north
-    def face_north(self, speed=None):
-        if speed is None:
-            speed = self.default_linear_speed
-
-        current_heading = self.get_heading()
-        target_heading = 90
-        turn_angle = (target_heading-current_heading + 180) % 360 - 180
-        print("turn_angle:",turn_angle)
-        self.turn_in_place(turn_angle, speed=speed)
 
     #move in counter-clockwise curved arc given arc radius (meters) and optional speed
     def travel_arc_ccw(self, radius, speed=None):
