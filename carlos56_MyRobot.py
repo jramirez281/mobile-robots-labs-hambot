@@ -1,16 +1,45 @@
-#MyRobot Control Code
-#Authored by: Josueh Ramirez (carlos56), Nathaniel Leblanc (nleblanc)
-#CDA4621 F26
+#experimental controller
 from robot_systems.robot import HamBot
 import time
 import math
 
+class PIDController:
+    def __init__(self, kp, ki, kd, dt, lo, hi):
+        self.kp = kp
+        self.ki = ki
+        self.kd = kd
+        self.dt = dt
+        self.lo = lo
+        self.hi = hi
+        self.integral = 0
+        self.prev_error = None
+    
+    def update(self, error):
+        self.integral += error * self.dt
+        if self.prev_error is not None:
+            derivative = (error - self.prev_error) / self.dt 
+        else:
+            derivative = 0
+
+        raw_output = self.kp * error + self.ki * self.integral + self.kd * derivative
+        clamped_output = min(max(self.lo, raw_output), self.hi)
+        if raw_output != clamped_output:
+            self.integral -= error * self.dt
+
+        self.prev_error = error
+        return clamped_output
+
 class MyRobot(HamBot):
     def __init__(self):
-        super().__init__()
+        super().__init__(lidar_enabled=True)
         self.wheel_radius = 0.045
         self.axel_radius = 0.205/2
         self.default_linear_speed = 0.2
+        self.dt = 0.05
+
+    #saturation function
+    def saturation(self, phi):
+
     #helper function to translate linear distance to revolutions, given radius and linear distance in meters
     def linear_to_rev(self, radius, distance):
         return distance/((2*math.pi)*radius)
@@ -22,6 +51,15 @@ class MyRobot(HamBot):
         return self.imu.sensor.calibration_status
 
     #default speed is .2 m/s
+
+    #function to gradually accelerate to target speed, to avoid
+    #abnormal behavior from jumping to speed right away
+    def ramp_speed(self, target, current, step=5):
+        if target > current:
+            return (current + min(step, target - current))
+        elif target < current:
+            return (current - min(step, current - target))
+        return target
 
     #function to move robot forward x meters
     def move_forward(self, distance, speed=None):
@@ -38,6 +76,23 @@ class MyRobot(HamBot):
         time.sleep(seconds)
 
         self.stop_motors()
+
+    #forward distance pid controlled motion primitive with encoder feedback
+    #takes distance to be traveled as parameter
+    def forward_encoder(self, goal):
+        self.reset_encoders()
+
+        while True:
+            left_rad = self.get_left_encoder_reading()
+            right_rad = self.get_right_encoder_reading()
+            left_dist = left_rad * self.wheel_radius
+            right_dist = right_rad * self.wheel_radius
+            traveled = (left_dist + right_dist) / 2
+
+
+    #forward distance pid controlled motion primitive with lidar feedback
+    #takes goal distance from wall as parameter
+    def forward_lidar(self, goal):
 
     #turn in place given angle (in degrees), speed can be optionally set as well
     def turn_in_place(self, angle, speed=None):
@@ -105,74 +160,3 @@ class MyRobot(HamBot):
         time.sleep(travel_secs)
 
         self.stop_motors()
-
-    #drive the robot around a rectangle of length L and width W, starting from
-    #the midpoint of one side, turning -90 degrees (clockwise) at each corner
-    def drive_rectangle(self, L, W, speed=None):
-        if speed is None:
-            speed = self.default_linear_speed
-
-        self.move_forward(W/2, speed=speed)
-        self.turn_in_place(-90, speed=speed)
-        self.move_forward(L, speed=speed)
-        self.turn_in_place(-90, speed=speed)
-        self.move_forward(W, speed=speed)
-        self.turn_in_place(-90, speed=speed)
-        self.move_forward(L, speed=speed)
-        self.turn_in_place(-90, speed=speed)
-        self.move_forward(W/2, speed=speed)
-
-    #drive the robot around an equilateral triangle of side length S, turning
-    #120 degrees (the exterior angle) at each vertex
-    def drive_triangle(self, S, speed=None):
-        if speed is None:
-            speed = self.default_linear_speed
-
-        self.move_forward(S, speed=speed)
-        self.turn_in_place(120, speed=speed)
-        self.move_forward(S, speed=speed)
-        self.turn_in_place(120, speed=speed)
-        self.move_forward(S, speed=speed)
-        self.turn_in_place(120, speed=speed)
-
-    #run the full lab 1 sequence: rectangle, counterclockwise circle,
-    #clockwise circle, then equilateral triangle
-    def lab1_path(self, L, W, R1, R2, S, speed=None):
-        if speed is None:
-            speed = self.default_linear_speed
-
-        #step 1 - Rectangle
-        self.drive_rectangle(L, W, speed=speed)
-
-        #step 2 - Counterclockwise Circle
-        self.travel_arc_ccw(R1, speed=speed)
-
-        #step 3 - Clockwise Circle
-        self.travel_arc_cw(R2, speed=speed)
-
-        #step 4 - Equilateral Triangle
-        self.drive_triangle(S, speed=speed)
-
-    #interactive demo: prompts the user for the rectangle, circle, and triangle
-    #dimensions (plus optional speed), then runs the full lab 1 path
-    def lab1_demo(self):
-        print("Welcome to the Lab 1 demo!")
-        print("Enter Rectangle length (in meters): ")
-        L = float(input())
-        print("Enter Rectangle width (in meters): ")
-        W = float(input())
-        print("Enter Counterclockwise Circle Radius (in meters): ")
-        R1 = float(input())
-        print("Enter Clockwise Circle Radius (in meters): ")
-        R2 = float(input())
-        print("Enter Equilateral Triangle Side Length (in meters): ")
-        S = float(input())
-        print("Enter speed (in m/s), leave blank to use default speed: ")
-        speed = input()
-        if speed == "":
-            speed = self.default_linear_speed
-        speed = float(speed)
-        print("Press Enter to continue.")
-        input()
-
-        self.lab1_path(L, W, R1, R2, S, speed=speed)
