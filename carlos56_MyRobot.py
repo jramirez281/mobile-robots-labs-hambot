@@ -88,7 +88,7 @@ class MyRobot(HamBot):
             left_dist = left_rad * self.wheel_radius
             right_dist = right_rad * self.wheel_radius
             traveled = (left_dist + right_dist) / 2
-
+            
 
     #forward distance pid controlled motion primitive with lidar feedback
     #takes goal distance from wall as parameter
