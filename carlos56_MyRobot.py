@@ -54,6 +54,7 @@ class MyRobot(HamBot):
 
     #saturation function
     def saturation(self, phi):
+        pass
 
     #helper function to translate linear distance to revolutions, given radius and linear distance in meters
     def linear_to_rev(self, radius, distance):
@@ -120,7 +121,7 @@ class MyRobot(HamBot):
             robot.set_right_motor_velocity(clampOutput)
 
     def rotation_PID(self, goalPose):
-        pid = PIDController(kp = 1, ki = 0, kd = 0, dt = 0.032, lo, = -15, hi = 15)
+        pid = PIDController(kp = 1, ki = 0, kd = 0, dt = 0.032, lo=-15, hi = 15)
 
         setPoint = (self.get_compass_reading() + 90) % 360
         
@@ -130,10 +131,10 @@ class MyRobot(HamBot):
 
             clampOutput = pid.imuUpdate(error)
 
-            if error > 0;
+            if error > 0:
                 robot.set_left_motor_velocity(-clampOutput)
                 robot.set_right_motor_velocity(clampOutput)
-            elif error < 0;
+            elif error < 0:
                 robot.set_left_motor_velocity(clampOutput)
                 robot.set_right_motor_velocity(-clampOutput)
 
