@@ -13,7 +13,22 @@ class PIDController:
         self.hi = hi
         self.integral = 0
         self.prev_error = None
-    
+        
+    def imuUpdate(self, error):
+        self.integral += error * self.dt
+        if self.prev_error is not None:
+            derivative = (error - self.prev_error) / self.dt
+        else:
+            derivative = 0
+            
+        raw_output = self.kp * error + self.ki * self.integral + self.kd * derivative
+        clamped_output = abs(min(max(self.lo, raw_output), self.hi))
+        if raw_output != clamped_output:
+            self.integral -= error * self.dt
+        
+        self.prev_error = error
+        return clamped_output
+        
     def update(self, error):
         self.integral += error * self.dt
         if self.prev_error is not None:
@@ -93,6 +108,34 @@ class MyRobot(HamBot):
     #forward distance pid controlled motion primitive with lidar feedback
     #takes goal distance from wall as parameter
     def forward_lidar(self, goal):
+        pid = PIDController(kp = 1, ki = 0, kd = 0, dt = 0.032, lo = -15, hi = 15)
+
+        while robot.experiment_supervisor.step(robot.timestep) != -1:
+            distance = lidar_range_image()[180]
+            error = distance - goal
+    
+            clampOutput = pid.update(error)
+    
+            robot.set_left_motor_velocity(clampOutput)
+            robot.set_right_motor_velocity(clampOutput)
+
+    def rotation_PID(self, goalPose):
+        pid = PIDController(kp = 1, ki = 0, kd = 0, dt = 0.032, lo, = -15, hi = 15)
+
+        setPoint = (self.get_compass_reading() + 90) % 360
+        
+        while robot.experiment_supervisor.step(robot.timestep) != -1:
+            currentPose = self.get_compass_reading()
+            error = ((setpoint - currentPose + 180) % 360) - 180
+
+            clampOutput = pid.imuUpdate(error)
+
+            if error > 0;
+                robot.set_left_motor_velocity(-clampOutput)
+                robot.set_right_motor_velocity(clampOutput)
+            elif error < 0;
+                robot.set_left_motor_velocity(clampOutput)
+                robot.set_right_motor_velocity(-clampOutput)
 
     #turn in place given angle (in degrees), speed can be optionally set as well
     def turn_in_place(self, angle, speed=None):
