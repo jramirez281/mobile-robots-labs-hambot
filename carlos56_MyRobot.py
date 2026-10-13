@@ -95,10 +95,7 @@ class MyRobot(HamBot):
 
     #forward distance pid controlled motion primitive with encoder feedback
     #takes distance to be traveled as parameter
-    def forward_encoder(self, goal):
-        kp = 100
-        ki = 0
-        kd = 0
+    def forward_encoder(self, goal, kp, ki, kd):
         pid = PIDController(kp, ki, kd, self.dt, -50, 50)
         current = 0
         start = time.time()
@@ -122,9 +119,10 @@ class MyRobot(HamBot):
         finally:
             self.stop_motors()
             
-
+    
     #forward distance pid controlled motion primitive with lidar feedback
     #takes goal distance from wall as parameter
+'''
     def forward_lidar(self, goal):
         pid = PIDController(kp = 1, ki = 0, kd = 0, dt = 0.032, lo = -15, hi = 15)
 
@@ -136,7 +134,8 @@ class MyRobot(HamBot):
     
             robot.set_left_motor_velocity(clampOutput)
             robot.set_right_motor_velocity(clampOutput)
-
+'''
+'''
     def rotation_PID(self, goalPose):
         pid = PIDController(kp = 1, ki = 0, kd = 0, dt = 0.032, lo=-15, hi = 15)
 
@@ -154,6 +153,7 @@ class MyRobot(HamBot):
             elif error < 0:
                 robot.set_left_motor_velocity(clampOutput)
                 robot.set_right_motor_velocity(-clampOutput)
+'''
 
     #turn in place given angle (in degrees), speed can be optionally set as well
     def turn_in_place(self, angle, speed=None):
