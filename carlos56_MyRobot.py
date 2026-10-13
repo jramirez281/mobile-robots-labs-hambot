@@ -96,6 +96,12 @@ class MyRobot(HamBot):
     #forward distance pid controlled motion primitive with encoder feedback
     #takes distance to be traveled as parameter
     def forward_encoder(self, goal):
+        kp = 100
+        ki = 0
+        kd = 0
+        pid = PIDController(kp, ki, kd, self.dt, -50, 50)
+        current = 0
+        start = time.time()
         self.reset_encoders()
 
         while True:
@@ -104,6 +110,8 @@ class MyRobot(HamBot):
             left_dist = left_rad * self.wheel_radius
             right_dist = right_rad * self.wheel_radius
             traveled = (left_dist + right_dist) / 2
+            error = goal - traveled
+            desired = pid.update(error)
             
 
     #forward distance pid controlled motion primitive with lidar feedback
