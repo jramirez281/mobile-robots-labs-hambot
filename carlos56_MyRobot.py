@@ -104,14 +104,23 @@ class MyRobot(HamBot):
         start = time.time()
         self.reset_encoders()
 
-        while True:
-            left_rad = self.get_left_encoder_reading()
-            right_rad = self.get_right_encoder_reading()
-            left_dist = left_rad * self.wheel_radius
-            right_dist = right_rad * self.wheel_radius
-            traveled = (left_dist + right_dist) / 2
-            error = goal - traveled
-            desired = pid.update(error)
+        try:
+            while True:
+                left_rad = self.get_left_encoder_reading()
+                right_rad = self.get_right_encoder_reading()
+                left_dist = left_rad * self.wheel_radius
+                right_dist = right_rad * self.wheel_radius
+                traveled = (left_dist + right_dist) / 2
+                error = goal - traveled
+                desired = pid.update(error) 
+                current = self.ramp_speed(desired, current)
+                self.set_left_motor_speed(current)
+                self.set_right_motor_speed(current)
+                if abs(error) < 0.01 or time.time() - start > 15:
+                    break
+                time.sleep(self.dt)
+        finally:
+            self.stop_motors()
             
 
     #forward distance pid controlled motion primitive with lidar feedback
