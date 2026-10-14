@@ -14,21 +14,6 @@ class PIDController:
         self.integral = 0
         self.prev_error = None
         
-    def imuUpdate(self, error):
-        self.integral += error * self.dt
-        if self.prev_error is not None:
-            derivative = (error - self.prev_error) / self.dt
-        else:
-            derivative = 0
-            
-        raw_output = self.kp * error + self.ki * self.integral + self.kd * derivative
-        clamped_output = abs(min(max(self.lo, raw_output), self.hi))
-        if raw_output != clamped_output:
-            self.integral -= error * self.dt
-        
-        self.prev_error = error
-        return clamped_output
-        
     def update(self, error):
         self.integral += error * self.dt
         if self.prev_error is not None:
@@ -51,10 +36,6 @@ class MyRobot(HamBot):
         self.axel_radius = 0.205/2
         self.default_linear_speed = 0.2
         self.dt = 0.05
-
-    #saturation function
-    def saturation(self, phi):
-        pass
 
     #helper function to translate linear distance to revolutions, given radius and linear distance in meters
     def linear_to_rev(self, radius, distance):
@@ -119,10 +100,16 @@ class MyRobot(HamBot):
         finally:
             self.stop_motors()
             
+    #wrapper for forward_encoder that takes feet
+    def fwd_encoder_ft(self, goal, kp, ki, kd):
+        goal_meters = goal * 0.3048
+        self.forward_encoder(goal_meters, kp, ki, kd)
     
     #forward distance pid controlled motion primitive with lidar feedback
     #takes goal distance from wall as parameter
+    #takes distance in meters and converts to mm
     def forward_lidar(self, goal, kp, ki, kd):
+        goal_mm = goal * 1000
         pid = PIDController(kp, ki, kd, self.dt, -50, 50)
         current = 0
         start = time.time()
@@ -133,7 +120,7 @@ class MyRobot(HamBot):
                 if distance <= 0:
                     time.sleep(self.dt)
                     continue
-                error = distance - goal
+                error = distance - goal_mm
                 desired = pid.update(error) 
                 current = self.ramp_speed(desired, current)
                 self.set_left_motor_speed(current)
@@ -143,6 +130,11 @@ class MyRobot(HamBot):
                 time.sleep(self.dt)
         finally:
             self.stop_motors()
+
+    #wrapper for forward_lidar that takes feet
+    def fwd_lidar_ft(self, goal, kp, ki, kd):
+        goal_meters = goal * 0.3048
+        self.forward_lidar(goal_meters, kp, ki, kd)
 
     def rotate_imu(self, angle, kp, ki, kd):
         pid = PIDController(kp, ki, kd, self.dt, -40, 40)
