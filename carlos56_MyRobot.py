@@ -143,23 +143,30 @@ class MyRobot(HamBot):
                 time.sleep(self.dt)
         finally:
             self.stop_motors()
-    def rotation_PID(self, goalPose):
-        pid = PIDController(kp = 1, ki = 0, kd = 0, dt = 0.032, lo=-15, hi = 15)
 
-        setPoint = (self.get_compass_reading() + 90) % 360
+    def rotate_imu(self, angle, kp, ki, kd):
+        pid = PIDController(kp, ki, kd, self.dt, -40, 40)
+
+        heading = self.get_heading(blocking=True)
+        target = (heading + angle) % 360
+        speed = 0
+        start = time.time()
         
-        while robot.experiment_supervisor.step(robot.timestep) != -1:
-            currentPose = self.get_compass_reading()
-            error = ((setpoint - currentPose + 180) % 360) - 180
+        try:
+            while True:
+                heading = self.get_heading(blocking=True)
+                error = ((target - heading + 180) % 360) - 180
 
-            clampOutput = pid.imuUpdate(error)
+                desired = pid.update(error)
+                speed = self.ramp_speed(desired, speed)
 
-            if error > 0:
-                robot.set_left_motor_velocity(-clampOutput)
-                robot.set_right_motor_velocity(clampOutput)
-            elif error < 0:
-                robot.set_left_motor_velocity(clampOutput)
-                robot.set_right_motor_velocity(-clampOutput)
+                self.set_left_motor_speed(-speed)
+                self.set_right_motor_speed(speed)
+                if abs(error) < 2 or time.time() - start > 15:
+                    break
+                time.sleep(self.dt)
+        finally:
+            self.stop_motors()
 
     #turn in place given angle (in degrees), speed can be optionally set as well
     def turn_in_place(self, angle, speed=None):
