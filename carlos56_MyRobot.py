@@ -109,7 +109,8 @@ class MyRobot(HamBot):
     #set on_carpet to True when running on carpet, since the thick pile 
     #makes the wheels travel less than the encoders report
     #to be set to false otherwise
-    def fwd_encoder_ft(self, goal, kp, ki, kd, on_carpet):
+    #Default gain constants meant to be final for lab 2
+    def fwd_encoder_ft(self, goal, on_carpet, kp=250, ki=5, kd=2):
         goal_meters = goal * 0.3048
         
         if on_carpet:
@@ -145,11 +146,15 @@ class MyRobot(HamBot):
             self.stop_motors()
 
     #wrapper for forward_lidar that takes feet
-    def fwd_lidar_ft(self, goal, kp, ki, kd):
+    #Default gain constants meant to be final for lab 2
+    def fwd_lidar_ft(self, goal, kp=0.25, ki=0.005, kd=0.02):
         goal_meters = goal * 0.3048 + self.lidar_offset #for accurate measurement from front of bot
         self.forward_lidar(goal_meters, kp, ki, kd)
 
-    def rotate_imu(self, angle, kp, ki, kd):
+    #positive angle = counterclockwise
+    #negative angle = clockwise
+    #Default gain constants meant to be final for lab 2
+    def rotate_imu(self, angle, kp=1, ki=0.05, kd=0.1):
         pid = PIDController(kp, ki, kd, self.dt, -40, 40)
 
         speed = 0
