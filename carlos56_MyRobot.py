@@ -13,6 +13,7 @@ class PIDController:
         self.hi = hi
         self.integral = 0
         self.prev_error = None
+        self.carpet_scale   # measured on carpet at home: 1 ft and 3 ft runs
         
     def update(self, error):
         self.integral += error * self.dt
@@ -101,8 +102,15 @@ class MyRobot(HamBot):
             self.stop_motors()
             
     #wrapper for forward_encoder that takes feet
-    def fwd_encoder_ft(self, goal, kp, ki, kd):
+    #set on_carpet to True when running on carpet, since the thick pile 
+    #makes the wheels travel less than the encoders report
+    #to be set to false otherwise
+    def fwd_encoder_ft(self, goal, kp, ki, kd, on_carpet):
         goal_meters = goal * 0.3048
+        
+        if on_carpet:
+            goal_meters = goal_meters / self.carpet_scale
+
         self.forward_encoder(goal_meters, kp, ki, kd)
     
     #forward distance pid controlled motion primitive with lidar feedback
