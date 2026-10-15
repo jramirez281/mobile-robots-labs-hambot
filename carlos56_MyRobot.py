@@ -37,6 +37,7 @@ class MyRobot(HamBot):
         self.default_linear_speed = 0.2
         self.dt = 0.05
         self.carpet_scale = 0.91   # measured on carpet at home: 1 ft and 3 ft runs
+        self.lidar_offset = 0.097   # m, lidar center to front edge (measured)
 
     #helper function to translate linear distance to revolutions, given radius and linear distance in meters
     def linear_to_rev(self, radius, distance):
@@ -143,7 +144,7 @@ class MyRobot(HamBot):
 
     #wrapper for forward_lidar that takes feet
     def fwd_lidar_ft(self, goal, kp, ki, kd):
-        goal_meters = goal * 0.3048
+        goal_meters = goal * 0.3048 + self.lidar_offset #for accurate measurement from front of bot
         self.forward_lidar(goal_meters, kp, ki, kd)
 
     def rotate_imu(self, angle, kp, ki, kd):
