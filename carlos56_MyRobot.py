@@ -1,4 +1,6 @@
-#experimental controller
+#MyRobot Control Code
+#Authored by: Josueh Ramirez (carlos56), Nathaniel Leblanc (nleblanc)
+#CDA4621 F26
 from robot_systems.robot import HamBot
 import time
 import math

@@ -1,3 +1,6 @@
+#Lab 2 Task 1 Code
+#Authored by Josueh Ramirez (carlos56), Nathaniel Leblanc (nleblanc)
+#CDA4621 F26
 import time
 from carlos56_MyRobot import MyRobot
 
