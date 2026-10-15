@@ -113,7 +113,6 @@ class MyRobot(HamBot):
                 self.set_left_motor_speed(current - trim)
                 self.set_right_motor_speed(current + trim)
                 if abs(error) < 0.01 or time.time() - start > 15:
-                    print(traveled, error)
                     break
                 time.sleep(self.dt)
         finally:
@@ -155,7 +154,6 @@ class MyRobot(HamBot):
                 self.set_left_motor_speed(current - trim)
                 self.set_right_motor_speed(current + trim)
                 if abs(error) < 10 or time.time() - start > 15:
-                    print(distance, error)
                     break
                 time.sleep(self.dt)
         finally:
@@ -193,7 +191,6 @@ class MyRobot(HamBot):
                 self.set_left_motor_speed(-speed)
                 self.set_right_motor_speed(speed)
                 if abs(error) < 0.5 or time.time() - start > 15:
-                    print(heading, error)
                     break
                 time.sleep(self.dt)
         finally:
