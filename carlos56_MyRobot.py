@@ -36,7 +36,7 @@ class MyRobot(HamBot):
         self.axel_radius = 0.205/2
         self.default_linear_speed = 0.2
         self.dt = 0.05
-        self.carpet_scale = 0.94   # measured on carpet at home: 1 ft and 3 ft runs
+        self.carpet_scale = 0.91   # measured on carpet at home: 1 ft and 3 ft runs
 
     #helper function to translate linear distance to revolutions, given radius and linear distance in meters
     def linear_to_rev(self, radius, distance):
