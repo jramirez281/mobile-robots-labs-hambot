@@ -51,6 +51,16 @@ class MyRobot(HamBot):
 
     #default speed is .2 m/s
 
+    #returns a wheel-speed trim (rpm) that keeps the robot on its starting heading
+    #while driving straight. Positive trim = robot has drifted clockwise, so the
+    #right wheel is sped up and the left slowed (left = speed - trim, right = speed + trim).
+    #kh is the gain in rpm per degree of drift; the trim is capped at +-10 rpm.
+    #added because the robot veered on carpet when driving in one direction
+    def heading_trim(self, hold, kh=1.0):
+        heading = self.get_heading(blocking=True)
+        drift = ((hold - heading + 180) % 360) - 180
+        return max(-10, min(10, kh * drift))
+
     #function to gradually accelerate to target speed, to avoid
     #abnormal behavior from jumping to speed right away
     def ramp_speed(self, target, current, step=5):
@@ -85,6 +95,7 @@ class MyRobot(HamBot):
         current = 0
         start = time.time()
         self.reset_encoders()
+        hold = self.get_heading(blocking=True)
 
         try:
             while True:
@@ -96,8 +107,9 @@ class MyRobot(HamBot):
                 error = goal - traveled
                 desired = pid.update(error) 
                 current = self.ramp_speed(desired, current)
-                self.set_left_motor_speed(current)
-                self.set_right_motor_speed(current)
+                trim = self.heading_trim(hold)
+                self.set_left_motor_speed(current - trim)
+                self.set_right_motor_speed(current + trim)
                 if abs(error) < 0.01 or time.time() - start > 15:
                     print(traveled, error)
                     break
@@ -126,6 +138,7 @@ class MyRobot(HamBot):
         pid = PIDController(kp, ki, kd, self.dt, -50, 50)
         current = 0
         start = time.time()
+        hold = self.get_heading(blocking=True)
 
         try:
             while True:
@@ -136,8 +149,9 @@ class MyRobot(HamBot):
                 error = distance - goal_mm
                 desired = pid.update(error) 
                 current = self.ramp_speed(desired, current)
-                self.set_left_motor_speed(current)
-                self.set_right_motor_speed(current)
+                trim = self.heading_trim(hold)
+                self.set_left_motor_speed(current - trim)
+                self.set_right_motor_speed(current + trim)
                 if abs(error) < 10 or time.time() - start > 15:
                     print(distance, error)
                     break
