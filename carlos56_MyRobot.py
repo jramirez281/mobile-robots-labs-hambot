@@ -5,12 +5,15 @@ from robot_systems.robot import HamBot
 import time
 import math
 
+#discrete PID controller. output = kp*error + ki*integral + kd*derivative,
+#clamped to [lo, hi]. Anti-windup: if the output saturates, this pass's
+#integral contribution is undone so the integral can't grow while clamped.
 class PIDController:
     def __init__(self, kp, ki, kd, dt, lo, hi):
         self.kp = kp
         self.ki = ki
         self.kd = kd
-        self.dt = dt
+        self.dt = dt    # s per control loop pass; sensors update at 20 Hz
         self.lo = lo
         self.hi = hi
         self.integral = 0
@@ -112,6 +115,7 @@ class MyRobot(HamBot):
                 trim = self.heading_trim(hold)
                 self.set_left_motor_speed(current - trim)
                 self.set_right_motor_speed(current + trim)
+                #exit when within tolerance, or after 15 s as a safety timeout
                 if abs(error) < 0.01 or time.time() - start > 15:
                     break
                 time.sleep(self.dt)
@@ -144,6 +148,7 @@ class MyRobot(HamBot):
         try:
             while True:
                 distance = self.get_range_image()[180]
+                #skip invalid lidar readings
                 if distance <= 0:
                     time.sleep(self.dt)
                     continue
@@ -153,6 +158,7 @@ class MyRobot(HamBot):
                 trim = self.heading_trim(hold)
                 self.set_left_motor_speed(current - trim)
                 self.set_right_motor_speed(current + trim)
+                #exit when within tolerance, or after 15 s as a safety timeout
                 if abs(error) < 10 or time.time() - start > 15:
                     break
                 time.sleep(self.dt)
@@ -168,6 +174,9 @@ class MyRobot(HamBot):
     #positive angle = counterclockwise
     #negative angle = clockwise
     #Default gain constants meant to be final for lab 2
+    #tracks the total angle turned by summing small wrapped heading changes,
+    #so +-180 degree turns have a definite direction (a wrapped heading error
+    #is ambiguous at exactly 180). Error = requested angle - angle turned so far.
     def rotate_imu(self, angle, kp=1, ki=0.05, kd=0.1):
         pid = PIDController(kp, ki, kd, self.dt, -40, 40)
 
@@ -190,6 +199,7 @@ class MyRobot(HamBot):
 
                 self.set_left_motor_speed(-speed)
                 self.set_right_motor_speed(speed)
+                #exit when within tolerance, or after 15 s as a safety timeout
                 if abs(error) < 0.5 or time.time() - start > 15:
                     break
                 time.sleep(self.dt)
