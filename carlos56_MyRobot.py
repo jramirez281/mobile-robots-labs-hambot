@@ -150,15 +150,19 @@ class MyRobot(HamBot):
     def rotate_imu(self, angle, kp, ki, kd):
         pid = PIDController(kp, ki, kd, self.dt, -40, 40)
 
-        heading = self.get_heading(blocking=True)
-        target = (heading + angle) % 360
         speed = 0
         start = time.time()
+
+        last = self.get_heading(blocking=True)
+        turned = 0
         
         try:
             while True:
                 heading = self.get_heading(blocking=True)
-                error = ((target - heading + 180) % 360) - 180
+                step = ((heading - last + 180) % 360) - 180
+                turned += step
+                last = heading
+                error = angle - turned
 
                 desired = pid.update(error)
                 speed = self.ramp_speed(desired, speed)
