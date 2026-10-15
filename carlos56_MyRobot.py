@@ -96,6 +96,7 @@ class MyRobot(HamBot):
                 self.set_left_motor_speed(current)
                 self.set_right_motor_speed(current)
                 if abs(error) < 0.01 or time.time() - start > 15:
+                    print(traveled, error)
                     break
                 time.sleep(self.dt)
         finally:
