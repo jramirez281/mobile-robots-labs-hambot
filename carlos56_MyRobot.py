@@ -78,6 +78,8 @@ class MyRobot(HamBot):
 
     #forward distance pid controlled motion primitive with encoder feedback
     #takes distance to be traveled as parameter
+    #note: Encoder distance on carpet varied by about ±0.5 in between identical runs (wheel slip). 
+    #calibrated with carpet_scale = 0.91 from 1 ft and 3 ft runs.
     def forward_encoder(self, goal, kp, ki, kd):
         pid = PIDController(kp, ki, kd, self.dt, -50, 50)
         current = 0
