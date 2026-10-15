@@ -13,7 +13,6 @@ class PIDController:
         self.hi = hi
         self.integral = 0
         self.prev_error = None
-        self.carpet_scale   # measured on carpet at home: 1 ft and 3 ft runs
         
     def update(self, error):
         self.integral += error * self.dt
@@ -37,6 +36,7 @@ class MyRobot(HamBot):
         self.axel_radius = 0.205/2
         self.default_linear_speed = 0.2
         self.dt = 0.05
+        self.carpet_scale   # measured on carpet at home: 1 ft and 3 ft runs
 
     #helper function to translate linear distance to revolutions, given radius and linear distance in meters
     def linear_to_rev(self, radius, distance):
